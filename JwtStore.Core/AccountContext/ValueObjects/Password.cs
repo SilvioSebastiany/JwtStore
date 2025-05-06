@@ -60,4 +60,39 @@ public class Password : ValueObject
         return $"{iterations}{splitChar}{salt}{splitChar}{key}";
     }
 
+    // Verify: Verifica se a senha fornecida corresponde ao hash armazenado.
+    // O hash é dividido em partes: número de iterações, salt e chave.
+    // A senha é derivada novamente usando o mesmo algoritmo e parâmetros, e a chave resultante é comparada com a chave armazenada.
+    // Se todas as partes corresponderem, a senha é considerada válida.
+    private static bool Verify(
+        string password,
+        string hash,
+        short keySize = 32,
+        int iterations = 10000,
+        char splitChar = '.')
+    {
+       password += Configuration.Secrets.PasswordSaltKey;
+
+        var parts = hash.Split(splitChar, 3);
+        if (parts.Length != 3)
+            return false;
+
+        var  hashIterations = Convert.ToInt32(parts[0]);
+        var salt = Convert.FromBase64String(parts[1]);
+        var key = Convert.FromBase64String(parts[2]);
+
+        if (hashIterations != iterations)
+            return false;
+        
+        using var algorithm = new Rfc2898DeriveBytes(
+            password,
+            salt,
+            hashIterations,
+            HashAlgorithmName.SHA256);
+
+        var ketToCheck = algorithm.GetBytes(keySize);
+
+        return ketToCheck.SequenceEqual(key);
+    }
+
 }

@@ -9,4 +9,23 @@ public class Password : ValueObject
 
     public string Hash { get; } = string.Empty;
     public string ResetCode { get; } = Guid.NewGuid().ToString("N").ToUpper()[0..8];
+
+
+    private static string Generate(
+        short length = 16,
+        bool includeSpecialChars = true,
+        bool uppercase = false)
+    {
+        var chars = includeSpecialChars ? (Valid + Special) : Valid;
+        var startRandom = uppercase ? 26 : 0;
+        var index = 0;
+        var res = new char[length];
+        var rnd = new Random();
+
+        while (index < length)
+            res[index++] = chars[rnd.Next(startRandom, chars.Length)];
+
+        return new string(res);
+    }
+
 }

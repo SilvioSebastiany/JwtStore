@@ -4,6 +4,7 @@ namespace JwtStore.Core.AccountContext.ValueObjects;
 
 public class Verification : ValueObject
 {
+    public Verification() { }
     // ToString("N"): Converte o Guid para string sem hifens.
     // [0..6]: Pega os primeiros 6 caracteres da string.
     public string Code { get; } = Guid.NewGuid().ToString("N")[0..6].ToUpper();

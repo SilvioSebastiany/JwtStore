@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 
 public partial class Email : ValueObject
 {
+    protected Email() { }
     private const string Pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
 
     public Email(string address)
